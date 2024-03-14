@@ -4,8 +4,10 @@
 """
 
 
-def sum_list(intput_list: list) -> int:
-    sum: int = 0
+def sum_list(intput_list: list[float]) -> float:
+    sum: float = 0
     for item in intput_list:
         sum += item
-    return int(sum)
+    return sum
+
+#print(sum_list([3.14, 1.11, 2.22]))
