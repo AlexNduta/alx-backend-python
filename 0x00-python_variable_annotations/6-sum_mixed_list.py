@@ -5,7 +5,7 @@ from typing import List
 """
 
 
-def sum_mixed_list(mxd_lst: List[int | float]) -> float:
+def sum_mixed_list(mxd_lst: List[int union float]) -> float:
     """ returns a sumation of all items in the array"""
     sum: float = 0
     for item in mxd_lst:
