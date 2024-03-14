@@ -6,7 +6,7 @@
 """
 
 
-def add(a: int, b: int) -> float:
+def add(a: float, b: float) -> float:
     """ add two integers and return a float value"""
     sum = a + b
     return float(sum)
