@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-import typing
 """
 -annotated funtion add
 -takes two ints (a and b)
