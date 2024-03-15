@@ -3,7 +3,7 @@ from typing import Tuple, Optional, Union
 """ takes a string, and int or float and returns a tupple"""
 
 
-def to_kv(k: str, v: Union[int, float]) -> tuple[str, float]:
+def to_kv(k: str, v: Union[int, float]) -> Tuple[str, float]:
     """ takes a string and either int r float
         - returns a tupple
     """
