@@ -1,4 +1,4 @@
-#!/usr/bin/env pythone
+#!/usr/bin/env python3
 from typing import Sequence, List, Tuple, Iterable
 """
 make little refavtoring to code that takes a list as parameter
