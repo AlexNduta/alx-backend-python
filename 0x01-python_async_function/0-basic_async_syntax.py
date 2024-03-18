@@ -1,10 +1,7 @@
 #!/usr/bin/env python3
 import asyncio
 import random
-"""
-- takes an int argument max_delay
-- max_delay = 10
-"""
+""" Module documentation"""
 
 
 async def wait_random(max_delay: int = 10) -> float:
