@@ -3,7 +3,7 @@
      This file tests for all cases of the utils methods in the utils.py file
 """
 from typing import Dict, List, Any, Sequence
-from utils import access_nested_map, get_json
+from utils import access_nested_map, get_json, memoize
 import unittest
 from unittest.mock import patch
 from parameterized import parameterized
@@ -85,12 +85,17 @@ class TestMemoize(unittest.TestCase):
                 return self.a_method()
         test_instance = TestClass()
 
+
+        # start thw mock process
         with patch.object(test_instance, 'a_method') as mocked_obj:
             mocked_obj.return_value = 42
-            print(test_instance.a_property())
-            print(test_instance.a_property())
+            result1= test_instance.a_property
+            result2 = test_instance.a_property
 
             mocked_obj.assert_called_once()
+
+            self.assertEqual(result1, 42)
+            self.assertEqual(result2, 42)
 
 
 
