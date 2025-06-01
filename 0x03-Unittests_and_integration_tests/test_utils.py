@@ -10,20 +10,22 @@ from parameterized import parameterized
 
 class TestAccessNestedMap(unittest.TestCase):
     """
-    This class houses the test methods that test all testcases of the acces_nested_map
+    -This class houses the test methods that test 
+    all testcases of the acces_nested_map
 
-    The class inherits form unittest class and used the TestCase methods
+    -The class inherits form unittest class and used the TestCase methods
 
     """
 
+
     @parameterized.expand([
-        ({"a":1}, ["a"], 1),
-        ({"a":{"b": 2}}, ["a", "b"], 2),
-        ({"a":{"b":2}}, ["a", "b"], 2),
+        ({"a": 1}, ["a"], 1),
+        ({"a": {"b": 2}}, ["a", "b"], 2),
+        ({"a": {"b": 2}}, ["a", "b"], 2),
         ])
     def test_access_nested_map(self, nested_map: Dict, path: Sequence, expected_result: Any) -> None:
         """
-        test if the path can traverse the nested map and give expected results
+       - test if the path can traverse the nested map and give expected results
         """
 
         self.assertEqual(access_nested_map(nested_map, path), expected_result)
