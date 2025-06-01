@@ -22,7 +22,6 @@ class TestAccessNestedMap(unittest.TestCase):
         ({"a":{"b":2}}, ["a", "b"], 2),
         ({"x":{"y":{"z":20}}}, ["x", "y", "z"], 20),
         ])
-
     def test_access_nested_map(self, nested_map: Dict, path: Sequence, expected_result: Any) -> None:
         """
         test if the path can traverse the nested map and give expected results
