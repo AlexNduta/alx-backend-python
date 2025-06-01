@@ -8,22 +8,22 @@ import unittest
 from unittest.mock import patch
 from parameterized import parameterized
 
+
 class TestAccessNestedMap(unittest.TestCase):
     """
-    -This class houses the test methods that test 
+    -This class houses the test methods that test44
     all testcases of the acces_nested_map
 
     -The class inherits form unittest class and used the TestCase methods
 
     """
-
-
     @parameterized.expand([
         ({"a": 1}, ["a"], 1),
         ({"a": {"b": 2}}, ["a", "b"], 2),
         ({"a": {"b": 2}}, ["a", "b"], 2),
         ])
-    def test_access_nested_map(self, nested_map: Dict, path: Sequence, expected_result: Any) -> None:
+    def test_access_nested_map(self, nested_map: Dict,
+                               path: Sequence, expected_result: Any) -> None:
         """
        - test if the path can traverse the nested map and give expected results
         """
@@ -32,21 +32,23 @@ class TestAccessNestedMap(unittest.TestCase):
 
     @parameterized.expand([
         ({}, ["a"], 'a'),
-        ({"a":1}, ["a", "b"], 'b')
+        ({"a": 1}, ["a", "b"], 'b')
         ])
-    def test_access_nested_map_exception(self, nested_map: Dict, path: Sequence, expected_result):
+    def test_access_nested_map_exception(self, nested_map: Dict,
+                                         path: Sequence, expected_result):
         """
-        test if keyError is raised for the passed parameters 
+        test if keyError is raised for the passed parameters
         """
         with self.assertRaises(KeyError) as cm:
             access_nested_map(nested_map, path)
-        self.assertEqual(f"'{expected_result}'", str(cm.exception) )
+        self.assertEqual(f"'{expected_result}'", str(cm.exception))
 
 
 class TestGetJson(unittest.TestCase):
     """
-    test The get_json() method to any calls
-    our primary goal is to avoid making any external HTTP network calls and thus, we will be using mocks
+    - test The get_json() method to any calls
+    - our primary goal is to avoid making any
+    external HTTP network calls and thus, we will be using mocks
     """
 
     @parameterized.expand([
@@ -58,7 +60,7 @@ class TestGetJson(unittest.TestCase):
         Make network calls using mocks to test if get_json works as expected
         """
         with patch('utils.requests.get') as mock_get:
-            mock_get.return_value.json.return_value= test_payload
+            mock_get.return_value.json.return_value = test_payload
 
             result = get_json(test_url)
 
@@ -67,8 +69,9 @@ class TestGetJson(unittest.TestCase):
 
 class TestMemoize(unittest.TestCase):
     """
-    Test the memoize method
-    - The memoize method acts as a cache that caches the function call and saved data returned by a function call
+    - Test the memoize method
+    - The memoize method acts as a cache that caches the function call
+    and saved data returned by a function call
     """
     def test_memoize(self):
         """
@@ -78,7 +81,6 @@ class TestMemoize(unittest.TestCase):
             """ A sample class to test memozation
 
             """
-            
 
             def a_method(self):
                 """ A simple class method that returns a fixed value"""
@@ -96,7 +98,7 @@ class TestMemoize(unittest.TestCase):
         with patch.object(test_instance, 'a_method') as mocked_obj:
             mocked_obj.return_value = 42
             # call the methdd twice to confirm memoisation works
-            result1= test_instance.a_property
+            result1 = test_instance.a_property
             result2 = test_instance.a_property
             # condirm if the  methid was called once
             mocked_obj.assert_called_once()
@@ -104,11 +106,5 @@ class TestMemoize(unittest.TestCase):
             self.assertEqual(result2, 42)
 
 
-
- 
-
-
-
-
-if __name__=='__main__':
+if __name__ == '__main__':
     unittest.main()
