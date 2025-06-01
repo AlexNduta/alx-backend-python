@@ -3,8 +3,9 @@
      This file tests for all cases of the utils methods in the utils.py file
 """
 from typing import Dict, List, Any, Sequence
-from utils import access_nested_map
+from utils import access_nested_map, get_json
 import unittest
+from unittest.mock import patch
 from parameterized import parameterized
 
 class TestAccessNestedMap(unittest.TestCase):
@@ -38,6 +39,35 @@ class TestAccessNestedMap(unittest.TestCase):
         with self.assertRaises(KeyError) as cm:
             access_nested_map(nested_map, path)
         self.assertEqual(f"'{expected_result}'", str(cm.exception) )
+
+
+class TestGetJson(unittest.TestCase):
+    """
+    test The get_json() method to any calls
+    our primary goal is to avoid making any external HTTP network calls and thus, we will be using mocks
+    """
+
+    @parameterized.expand([
+        ("http://example.com", {"payload": True}),
+        ("http://holberton.io", {"payload": False})
+        ])
+    def test_get_json(self, test_url, test_payload):
+        """
+        Make network calls using mocks to test if get_json works as expected
+        """
+        with patch('utils.requests.get') as mock_get:
+            mock_get.return_value.json.return_value= test_payload
+
+            result = get_json(test_url)
+
+            self.assertEqual(result, test_payload)
+
+
+
+
+
+
+
 
 
 
