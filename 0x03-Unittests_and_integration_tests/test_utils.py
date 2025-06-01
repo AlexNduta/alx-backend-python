@@ -68,32 +68,36 @@ class TestMemoize(unittest.TestCase):
     Test the memoize method
     - The memoize method acts as a cache that caches the function call and saved data returned by a function call
     """
-
     def test_memoize(self):
         """
         test that a method annotated with @memoize is only executed once
         """
         class TestClass:
-            """ A sample class to test memozation """
+            """ A sample class to test memozation
+
+            """
+            
+
             def a_method(self):
                 """ A simple class method that returns a fixed value"""
                 return 42
 
             @memoize
             def a_property(self):
-                """A property that uses memoisation to call a method"""
+                """
+                A property that uses memoisation to call a method
+                """
                 return self.a_method()
+
         test_instance = TestClass()
-
-
         # start thw mock process
         with patch.object(test_instance, 'a_method') as mocked_obj:
             mocked_obj.return_value = 42
+            # call the methdd twice to confirm memoisation works
             result1= test_instance.a_property
             result2 = test_instance.a_property
-
+            # condirm if the  methid was called once
             mocked_obj.assert_called_once()
-
             self.assertEqual(result1, 42)
             self.assertEqual(result2, 42)
 
