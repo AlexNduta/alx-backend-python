@@ -42,7 +42,8 @@ class TestGithubOrgClient(unittest.TestCase):
         """
         - tests that the org() returns the correct output
         - we wil be using context managers
-        - Because '_public_repos_url' is a property, we will be using the PropertyMock
+        - Because '_public_repos_url' is a property,
+        we will be using the PropertyMock
         """
         # start the mock process by copying
         # The HTTP call action
@@ -59,16 +60,20 @@ class TestGithubOrgClient(unittest.TestCase):
 
     @patch('client.get_json')
     def test_public_repos(self, mocked_get_json):
-        """ 
-        - does a unitest on the public repos method
-        - The public_repos() can optionaly take a string and and returns a list of strings
         """
-        with patch.object(GithubOrgClient, '_public_repos_url', new_callable = PropertyMock) as mocked_public_repo:
+        - does a unitest on the public repos method
+        - The public_repos() can optionaly take a string
+        and and returns a list of strings
+        """
+        with patch.object(GithubOrgClient, '_public_repos_url',
+                          new_callable=PropertyMock) as mocked_public_repo:
             fake_urls = "https://api.github.com/orgs/testorg/repos"
             # set the mock return value
             mocked_public_repo.return_value = fake_urls
 
-            chosen_repos_payload = [{"name": "repo-alpha"}, {"name": "repo-beta", "license": {"key": "mit"}}]
+            chosen_repos_payload = [{"name": "repo-alpha"},
+                                    {"name": "repo-beta",
+                                     "license": {"key": "mit"}}]
             mocked_get_json.return_value = chosen_repos_payload
             expected_repo_names = ["repo-alpha", "repo-beta"]
 
@@ -77,7 +82,6 @@ class TestGithubOrgClient(unittest.TestCase):
             self.assertEqual(result_repos, expected_repo_names)
             mocked_public_repo.assert_called_once()
             mocked_get_json.assert_called_once()
-
 
 
 if __name__ == '__main__':
