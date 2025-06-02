@@ -10,7 +10,9 @@ from typing import Dict
 class TestGithubOrgClient(unittest.TestCase):
     """
     - Test the GithubOrgClient class and methods
-
+    - This test houses tests like:
+        test_org, test_public_repos_url
+        etc
     """
     @parameterized.expand([
         ("google", {"name": "google"}),
