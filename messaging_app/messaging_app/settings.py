@@ -123,14 +123,14 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
-REST_FRAMEWORK ={
-        'DEFAULT_AUTHENTICATION_CLASSES':[
-            'rest_framework.authentication.SessionAuthentication',
-            'rest_framework.authentication.BasicAuthentication'
-
-            ],
-        'DEFAULT_PERMISSION_CLASSES': [
-            'rest_framework.permission.IsAuthenticated',
-            ]
+# This is a special dictionary that DRF looks for
+# to find its default settings. This is where you define the "rules".
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication', # For example
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ]
 }
