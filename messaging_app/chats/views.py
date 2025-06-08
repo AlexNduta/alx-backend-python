@@ -1,6 +1,7 @@
 #from django.shortcuts import render
 
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets, permissions, status
+from django_filters.rest_framework import DjangoFilterBackend
 from .models import Conversation, Message
 from .serializers import ConversationSerializer, MessageSerializer
 
@@ -16,6 +17,10 @@ class ConversationViewSet(viewsets.ModelViewSet):
 
     # Show conversations to users who have been loggedin and authenticated
     permission_class = [permissions.IsAuthenticated]
+
+    # enable filtering
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['participants'] # allow filtering conversations by participants ID
 
     def get_queryset(self):
         """
@@ -33,6 +38,10 @@ class MessageViewSet(viewsets.ModelViewSet):
 
     # ony show messages to users who have bee loggedin and authenticted
     permission_class = [permissions.IsAuthenticated]
+
+    #  enable filtering
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['conversations', 'sender'] # allow filtering messages by sender
 
     def get_queryset(self):
         """
