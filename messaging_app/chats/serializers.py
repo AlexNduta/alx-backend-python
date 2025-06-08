@@ -1,79 +1,106 @@
-from rest_framework import serializers
 from .models import User, Conversation, Message
+from rest_framework import serializers
+from django.contrib.auth import authenticate
 
 
 class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model=User
-        fields = ['user_id', 'username', 'first_name', 'last_name', 'phone_number']
-
-class MessageSerializer(serializers.ModelSerializer):
-   sender = serializers.StringRelatedField(read_only=True)
-
-   class Meta:
-        model=Message
-        exclude = ['conversation']
-
-class ConversationSerializer(serializers.ModelSerializer):
-  """
-  - we have three 'magic fields':
-    participants_info
-    message_count
-    latest_message
-
-    ------
-    - DRF knows that, to get the value of the participants_info, it must call the method, get_partcipants_info()
-    - 
-
-  """
-    # custom conversation  fields
-    conversation_summary = serializers.CharField(source='__str__', read_only=True)
-
-    # 'magic' fields related to serializerMethods
-    participants_info= serializers.SerializerMethodField()
-    message_count = serializers.SerializerMethodField()
-    latest_message = serializers.SerializerMethodField()
+    password = serializers.CharField(write_only=True, required=True, style={'input_type': 'password'})
 
     class Meta:
-        model=Conversation
-        fields = ['conversation_id', 
-                  'conversation_summary', #our character field
-                  'participants_info',  # our first serilizermathodfied;
-                  'message_count',      # our second serializermethodfield
-                  'latest_message', # Our 3rd serialiser method field
-                  ]
-    def get_participants_info(self, obj):
-        """
-        *This method is automatically called by DRF to populate paricipants info
-        * we get all the participants and serialize them with UserSerializer
-        - The obj is the conversation instance object to serialize
-        - 
-        """
-        participants = obj.participants.all()
-        return UserSerializer(participants, many=True).data
+        model = User
+        fields = ['user_id', 'username', 'email', 'password', 
+                 'first_name', 'last_name', 'phone_number', 'date_joined']
+        extra_kwargs = {
+            'password': {'write_only': True},
+            'user_id': {'read_only': True},
+            'date_joined': {'read_only': True}
+        }
 
-    def get_message_count(self, obj):
-        """
-        * polulates the 'message_count'
-        * we use the related name 'messages' to count messages
-        """
-        return obj.messages.count()
-    def get_latest_message(self, obj):
-        """populates the 'latest_message' """
-        latest = obj.messages.order_by('-created_at').first()
-        if latest:
-            # use MessageSerializer to format the latest message
-            return  MessageSerializer(latest).data
-        return None # return nothing if there are no messages
+    def create(self, validated_data):
+        user = User.objects.create_user(
+            username=validated_data['username'],
+            email=validated_data['email'],
+            password=validated_data['password'],
+            first_name=validated_data.get('first_name', ''),
+            last_name=validated_data.get('last_name', ''),
+            phone_number=validated_data.get('phone_number', '')
+        )
+        return user
+
+class LoginSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    password = serializers.CharField()
 
     def validate(self, data):
-        """ This is a validation for creating/updating conversation 
-        * Demonstrates the use of serializers.ValidationError
+        user = authenticate(**data)
+        if user and user.is_active:
+            return user
+        raise serializers.ValidationError("Incorrect Credentials")
+
+
+
+class MessageSerializer(serializers.Serializer):
+    """
+    Serializer for the Message model.
+    Converts Message instances to and from JSON format.
+    """
+
+    message_id = serializers.UUIDField(read_only=True)
+    message_body = serializers.CharField(required=True, allow_blank=False)
+    sent_at = serializers.DateTimeField(read_only=True)
+    sender = UserSerializer(read_only=True)
+
+
+    def validate_message_body(self, value):
         """
-        # when creating a conversation, partcipants must be provided
-        participants = self.initial_data.get('participants', [])
-
-        if len(participants) < 2:
-            raise serializers.ValidationError("A conversation must have atleast two participants")
-        return data
-
+        Validate that the message body is not empty.
+        """
+        if not value.strip():
+            raise serializers.ValidationError("Message body cannot be empty.")
+        return value
+    class Meta:
+        model = Message
+        fields = ['message_id', 'message_body', 'sent_at', 'conversation', 'sender']
+        read_only_fields = ['message_id', 'sent_at']
+    
+    
+class ConversationSerializer(serializers.Serializer):
+    """
+    Serializer for the Chat model.
+    Converts Chat instances to and from JSON format.
+    """
+    messages = MessageSerializer(many=True, read_only=True)
+    conversation_id = serializers.UUIDField(read_only=True)
+    name = serializers.CharField(max_length=255, required=False, allow_blank=True)
+    participants = UserSerializer(many=True, read_only=True)
+    total_messages = serializers.SerializerMethodField()
+    def get_total_messages(self, obj):
+        """
+        Return the total number of messages in the conversation.
+        """
+        return obj.messages.count()
+    
+    class Meta:
+        model = Conversation
+        fields = ['conversation_id', 'name', 'participants']
+        read_only_fields = ['conversation_id']
+        extra_kwargs = {
+            'name': {'required': False, 'allow_blank': True},
+            'participants': {'read_only': True}
+        }
+        depth = 1
+    def validate_name(self, value):
+        """
+        Validate that the conversation name is not empty.
+        """
+        if not value.strip():
+            raise serializers.ValidationError("Conversation name cannot be empty.")
+        return value
+    def validate_participants(self, value):
+        """
+        Validate that at least one participant is provided.
+        """
+        if not value:
+            raise serializers.ValidationError("At least one participant is required.")
+        return value
+        
