@@ -1,3 +1,4 @@
+import uuid
 from django.db import models
 from django.contrib.auth.models import Abstractuser
 # Create your models here.
@@ -9,21 +10,29 @@ class User(AbstractUser)
         * email
         * password
     How to use it:
-
+    uses UUID for the primary key
     """
-    pass
+    user_id = models.UUIDField(
+            primary_key=True,
+            default=uuid.uuid4,
+            editable=False)
+    first_name = models.CharField(max_length=150, blank=True)
+    last_name = models.CharField(max_length=150, blank=True)
+    phone_number = models.CharField(max_length=20, blank=True)
 
 class Conversation(models.Model):
     """
     This is a conversations between two or more users
     """
     participants = models.ManyToManyField('chats.User', related_name = 'conversations')
-
+    conversation_id = models.UUIDField(primary_key=True,
+                                       default=uuid.uuid4,
+                                       editable=False)
     def __str__(self):
         """
         Used give the output a human readable format
         """
-        return f"Conversation{self.id}"
+        return f"Conversation{self.conversation_id}"
 
 class Message(models.Model):
     """
@@ -36,8 +45,16 @@ class Message(models.Model):
         * A single message can only belong to one conversation: one to one
         * A single conversation can have multiple messages: one to many
     """
-    conversation = models.ForeignKey(Conversation, on_delete=models.CASCADE, related_name='messages')
-    sender = models.ForeignKey('chats.User', on_delete = models.CASCADE)
+    message_id = model.UUIDField(
+            primary_key=True,
+            dafault=uuid.uuid4,
+            editable=False)
+    conversation = models.ForeignKey(
+            Conversation, 
+            on_delete=models.CASCADE, 
+            related_name='messages')
+    sender = models.ForeignKey('chats.User', 
+                               on_delete = models.CASCADE)
     content = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
 
