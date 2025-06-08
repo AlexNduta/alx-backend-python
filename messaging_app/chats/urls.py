@@ -1,26 +1,14 @@
-from django.urls import include, path, re_path
-from rest_framework_nested import routers
-from .views import ConversationViewSet, MessageViewSet, UserViewSet
+from django.urls import path, include 
+from rest_framework.routers import DefaultRouter
+from .views import ConversationViewSet, MessageViewSet
 
-router = routers.DefaultRouter()
-router.register(r'users', UserViewSet, basename='user')
-router.register(r'conversations', ConversationViewSet, basename='conversation')
 
-# Create nested router
-conversations_router = routers.NestedDefaultRouter(
-    router, 
-    r'conversations', 
-    lookup='conversation'
-)
-conversations_router.register(
-    r'messages', 
-    MessageViewSet, 
-    basename='conversation-messages'
-)
+# create a router and register our viewset with it
+router = DefaultRouter()
+router.register(r'conversation', ConversationViewSet, basename='conversation')
+router.register(r'messages', MessageViewSet, basename='message')
 
-urlpatterns = [
-    path('', include(router.urls)),
-    path('', include(conversations_router.urls)),
-    re_path(r'auth/', include('djoser.urls')),
-    re_path(r'auth/', include('djoser.urls.authtoken')),
-]
+
+urlpatterns =[
+        path('', include(router.urls))
+        ]
