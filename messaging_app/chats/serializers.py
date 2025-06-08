@@ -8,11 +8,16 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ['user_id', 'username', 'first_name', 'last_name', 'phone_number']
 
 class MessageSerializer(serializers.ModelSerializer):
-    class Meta:
+   sender = UserSerializer(read_only=True)# create an instance of the sender's info that we will use
+
+   class Meta:
         model=Message
         fields = '__all__'
 
 class ConversationSerializer(serializers.ModelSerializer):
-    class Meta;
+    # 
+    participants= UserSerializer(many=True, read_only=True)
+    messages = MessageSerializer(many=True, read_only=True)
+    class Meta:
         model=Conversation
-        fields = '__all__'
+        fields = ['conversation_id', 'participants', 'messages']
