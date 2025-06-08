@@ -55,8 +55,9 @@ class Message(models.Model):
             related_name='messages')
     sender = models.ForeignKey('chats.User', 
                                on_delete = models.CASCADE)
-    content = models.TextField()
-    timestamp = models.DateTimeField(auto_now_add=True)
+    sent_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add)
+    message_body = models.TextField()
 
     def __str__(self):
         return f"From{self.sender} in Conversation {self.conversation.id}"
