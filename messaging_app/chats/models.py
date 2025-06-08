@@ -1,7 +1,10 @@
-from django.db import models
 import uuid
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+
+from django.contrib.auth.models import (AbstractBaseUser, BaseUserManager,
+                                        PermissionsMixin)
+from django.db import models
 from django.utils import timezone
+
 
 class UserManager(BaseUserManager):
     """Custom manager for the User model."""
@@ -58,31 +61,27 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.username
 
 class Conversation(models.Model):
-    """
-    Model representing a conversation between users.
-    Each conversation can have multiple participants.
-    """
     conversation_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, unique=True)
     name = models.CharField(max_length=255, blank=True, null=True)
-    # Many-to-many relationship with User model to allow multiple participants
     participants = models.ManyToManyField(User, related_name='conversations')
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Conversation {self.id} with {self.participants.count()} participants"
-
+        return f"Conversation {self.conversation_id}"
+    
 class Message(models.Model):
-    """
-    Model representing a message in a conversation.
-    Each message is linked to a specific conversation and user.
-    """
     message_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, unique=True)
     message_body = models.TextField()
     sent_at = models.DateTimeField(auto_now_add=True)
-    # Foreign key to link message to a conversation and sender
-    conversation = models.ForeignKey(Conversation, on_delete=models.CASCADE, related_name='conversations')
-    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sender')
-
+    sender = models.ForeignKey(User, on_delete=models.CASCADE)
+    conversation = models.ForeignKey(Conversation, on_delete=models.CASCADE, related_name='messages')
+    
+    class Meta:
+        ordering = ['-sent_at']
+        indexes = [
+            models.Index(fields=['conversation', 'sent_at']),
+            models.Index(fields=['sender']),
+        ]
+    
     def __str__(self):
-        return f"Message {self.id} from {self.sender.username} in Conversation {self.conversation.id}"
- 
+        return f"Message from {self.sender} in {self.conversation}"

@@ -1,6 +1,7 @@
-from .models import User, Conversation, Message
-from rest_framework import serializers
 from django.contrib.auth import authenticate
+from rest_framework import serializers
+
+from .models import Conversation, Message, User
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -78,11 +79,12 @@ class ConversationSerializer(serializers.Serializer):
         """
         Return the total number of messages in the conversation.
         """
+        print(f"Calculating total messages for conversation {obj}")
         return obj.messages.count()
     
     class Meta:
         model = Conversation
-        fields = ['conversation_id', 'name', 'participants']
+        fields = ['conversation_id', 'name', 'participants', 'messages', 'total_messages']
         read_only_fields = ['conversation_id']
         extra_kwargs = {
             'name': {'required': False, 'allow_blank': True},
