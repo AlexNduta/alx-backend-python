@@ -19,5 +19,7 @@ from django.urls import path
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    # Our app's URL
+    # The specific acces path will be 'api'
     path('api/', include('chats.urls')),
 ]
