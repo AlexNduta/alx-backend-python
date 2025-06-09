@@ -17,13 +17,13 @@ router.register(r'conversations', ConversationViewSet, basename='conversation')
 conversation_router = routers.NestedDefaultRouter(router, r'conversations', lookup='conversation')
 # Register the MessageViewset on the nested router
 # This will create a URL like /conversations/{conversation_pk}/messages/
-conversation_router.register(r'messages', MessageViewset, basename='conversation-messages')
+conversation_router.register(r'messages', MessageViewSet, basename='conversation-messages')
 """
 URLs generated will be conversation/, conversation/<id>/ and messages/, messages/<id>/
 """
 
 urlpatterns =[
-        path('', include(router.urls))
+        path('', include(router.urls)),
         path('', include(conversation_router.urls))
         
         ]

@@ -15,7 +15,7 @@ class MessageSerializer(serializers.ModelSerializer):
         exclude = ['conversation']
 
 class ConversationSerializer(serializers.ModelSerializer):
-  """
+    """
   - we have three 'magic fields':
     participants_info
     message_count
@@ -24,13 +24,10 @@ class ConversationSerializer(serializers.ModelSerializer):
     ------
     - DRF knows that, to get the value of the participants_info, it must call the method, get_partcipants_info()
     - 
-
-  """
+    """
     # custom conversation  fields
     conversation_summary = serializers.CharField(source='__str__', read_only=True)
-
     # 'magic' fields related to serializerMethods
-
     participants_info= serializers.SerializerMethodField()
     message_count = serializers.SerializerMethodField()
     latest_message = serializers.SerializerMethodField()

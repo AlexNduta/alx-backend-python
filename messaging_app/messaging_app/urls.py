@@ -15,14 +15,19 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include 
 
+"""
+
+
+    # Our app's URL
+
+    # The specific acces path will be 'api'
+    # provide login and logout features for the browssable API
+
+"""
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # Our app's URL
-    # The specific acces path will be 'api'
     path('api/', include('chats.urls')),
-
-    # provide login and logout features for the browssable API
-    path('api-auth/', include('rest_framework.urls'))
+    path('api-auth/', include('rest_framework.urls')),
 ]

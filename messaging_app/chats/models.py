@@ -1,9 +1,9 @@
 import uuid
 from django.db import models
-from django.contrib.auth.models import Abstractuser
+from django.contrib.auth.models import AbstractUser
 # Create your models here.
 
-class User(AbstractUser)
+class User(AbstractUser):
     """ This will be our user
     - inheriting from AbstractUser gives us all fields e.g:
         * username
@@ -45,9 +45,9 @@ class Message(models.Model):
         * A single message can only belong to one conversation: one to one
         * A single conversation can have multiple messages: one to many
     """
-    message_id = model.UUIDField(
+    message_id = models.UUIDField(
             primary_key=True,
-            dafault=uuid.uuid4,
+            default=uuid.uuid4,
             editable=False)
     conversation = models.ForeignKey(
             Conversation, 
@@ -56,7 +56,7 @@ class Message(models.Model):
     sender = models.ForeignKey('chats.User', 
                                on_delete = models.CASCADE)
     sent_at = models.DateTimeField(auto_now_add=True)
-    created_at = models.DateTimeField(auto_now_add)
+    created_at = models.DateTimeField(auto_now_add=True)
     message_body = models.TextField()
 
     def __str__(self):
