@@ -22,4 +22,7 @@ urlpatterns = [
     # Our app's URL
     # The specific acces path will be 'api'
     path('api/', include('chats.urls')),
+
+    # provide login and logout features for the browssable API
+    path('api-auth/', include('rest_framework.urls'))
 ]

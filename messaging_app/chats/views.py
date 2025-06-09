@@ -33,7 +33,7 @@ class MessageViewSet(viewsets.ModelViewSet):
     """
 
     # make a query to te database to get all Messages
-    queryset = Message.objects.all()
+   # queryset = Message.objects.all()
     serializer_class = MessageSerializer
 
     # ony show messages to users who have bee loggedin and authenticted
@@ -46,5 +46,16 @@ class MessageViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         """
         ensure users only see messages of a convesation they are part of
+        * We will filter the messages based on the conversation_pk from the nested URL
         """
-        return Message.objects.filter(conversation__in=user_conversations)
+        conversation_pk = self.kwargs['conversation_pk']
+        return Message.objects.filter(conversation_id=conversation_pk)
+
+    def perform_create(self, serializer):
+        """
+        * When creating a message, we automatically set the sender 
+        to the logged-in user and associate it with the conversation from the URL
+        """
+        conversation_pk = self.kwargs['conversation_pk']
+        conversation = Conversation.objects.get(pk=conversation_pk)
+        serializer.save(senderi=self.request.user, conversation=convesation)
