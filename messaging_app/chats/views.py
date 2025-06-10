@@ -4,7 +4,7 @@ from rest_framework import viewsets, permissions, status
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import Conversation, Message
 from .serializers import ConversationSerializer, MessageSerializer
-
+from .permissions import IsParticipantInConversation
 
 class ConversationViewSet(viewsets.ModelViewSet):
     """
@@ -16,7 +16,7 @@ class ConversationViewSet(viewsets.ModelViewSet):
     serializer_class = ConversationSerializer
 
     # Show conversations to users who have been loggedin and authenticated
-    permission_class = [permissions.IsAuthenticated]
+    permission_class = [permissions.IsAuthenticated, IsParticipantInConversation]
 
     # enable filtering
     filter_backends = [DjangoFilterBackend]
