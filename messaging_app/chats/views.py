@@ -27,6 +27,24 @@ class ConversationViewSet(viewsets.ModelViewSet):
         ensure that users can only see their conversations
         """
         return self.request.user.conversations.all()
+    @action(detail=True, method=['post'])
+    def leave(self, request, pk=None):
+        """
+        allows a user to leave a conversation
+        """
+        conversation = self.get_object()
+        user = request.user
+        if conversation.participants.count() == 1:
+            return response.Response({
+                'error': 'Cannot leave a conversation with only one participant'
+                }, status=status.HTTP_403_FORBIDDEN)
+        # if the check passes, remove user and return success
+        conversation.part.remove(user)
+        return response.Response(
+                {'status': 'You have left the conversation'},
+                status=status.HTTP_200_OK
+                )
+
 class MessageViewSet(viewsets.ModelViewSet):
     """
     Api endpoint that allow for messages to be viewed or edited
@@ -37,7 +55,7 @@ class MessageViewSet(viewsets.ModelViewSet):
     serializer_class = MessageSerializer
 
     # ony show messages to users who have bee loggedin and authenticted
-    permission_class = [permissions.IsAuthenticated, IsParticipantOfConversation]
+    permission_class = [IsParticipantOfConversation]
 
     #  enable filtering
     filter_backends = [DjangoFilterBackend]
