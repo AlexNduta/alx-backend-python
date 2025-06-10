@@ -17,9 +17,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include 
 from rest_framework.simplejwt.views import(TokenObtainPairView, TokenRefreshView,)
+from chats.auth import MyTokenObtainPairView # import the custom views from auth.py
 """
-
-
     # Our app's URL
 
     # The specific acces path will be 'api'
@@ -34,6 +33,6 @@ urlpatterns = [
     path('api-auth/', include('rest_framework.urls')),
 
     # URL used for authentication 
-    path('api/token', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token', MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh', TokenRefreshView.as_view(), name='token_refresh')
 ]
