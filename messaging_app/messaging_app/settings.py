@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'django_filters',
+    'rest_framework_simplejwt',
     'rest_framework',
     'chats',
     'django.contrib.admin',
@@ -128,8 +129,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # to find its default settings. This is where you define the "rules".
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.BasicAuthentication', # For example
+        'rest_framework_simplejwt.authentication.JWTAuthentication', # JWT authentication
+        'rest_framework.authentication.SessionAuthentication', # session cookie authenticatin
+        'rest_framework.authentication.BasicAuthentication', # password and username and pass auth
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',

@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include 
-
+from rest_framework.simplejwt.views import(TokenObtainPairView, TokenRefreshView,)
 """
 
 
@@ -28,6 +28,12 @@ from django.urls import path, include
 """
 urlpatterns = [
     path('admin/', admin.site.urls),
+    # this is the root URL
     path('api/', include('chats.urls')),
+    # This is the authentication URL
     path('api-auth/', include('rest_framework.urls')),
+
+    # URL used for authentication 
+    path('api/token', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh', TokenRefreshView.as_view(), name='token_refresh')
 ]
