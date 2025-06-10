@@ -5,7 +5,8 @@ from django_filters.rest_framework import DjangoFilterBackend
 from .models import Conversation, Message
 from .serializers import ConversationSerializer, MessageSerializer
 from .permissions import IsParticipantOfConversation
-
+from .pagination import MessagePagination
+from .filters import MessageFilter
 class ConversationViewSet(viewsets.ModelViewSet):
     """
     Api endpoint that allows for a conversation to be viewd or edited
@@ -53,14 +54,14 @@ class MessageViewSet(viewsets.ModelViewSet):
     # make a query to te database to get all Messages
    # queryset = Message.objects.all()
     serializer_class = MessageSerializer
-
+    pagination_class = MessagePagination
     # ony show messages to users who have bee loggedin and authenticted
     permission_class = [IsParticipantOfConversation]
-
+    filter_backeds = 
     #  enable filtering
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['conversations', 'sender'] # allow filtering messages by sender
-
+    #filterset_fields = ['conversations', 'sender'] # allow filtering messages by sender
+    filterset_class = MessageFilter
     def get_queryset(self):
         """
         ensure users only see messages of a convesation they are part of
