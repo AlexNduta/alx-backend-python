@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include 
-from rest_framework.simplejwt.views import(TokenObtainPairView, TokenRefreshView,)
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from chats.auth import MyTokenObtainPairView # import the custom views from auth.py
 """
     # Our app's URL

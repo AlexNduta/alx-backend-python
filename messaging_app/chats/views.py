@@ -1,5 +1,6 @@
 #from django.shortcuts import render
-
+from rest_framework.decorators import action
+from rest_framework.response import Response
 from rest_framework import viewsets, permissions, status
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import Conversation, Message
@@ -28,7 +29,7 @@ class ConversationViewSet(viewsets.ModelViewSet):
         ensure that users can only see their conversations
         """
         return self.request.user.conversations.all()
-    @action(detail=True, method=['post'])
+    @action(detail=True, methods=['post'])
     def leave(self, request, pk=None):
         """
         allows a user to leave a conversation
@@ -40,7 +41,7 @@ class ConversationViewSet(viewsets.ModelViewSet):
                 'error': 'Cannot leave a conversation with only one participant'
                 }, status=status.HTTP_403_FORBIDDEN)
         # if the check passes, remove user and return success
-        conversation.part.remove(user)
+        conversation.paricipants.remove(user)
         return response.Response(
                 {'status': 'You have left the conversation'},
                 status=status.HTTP_200_OK
@@ -57,7 +58,7 @@ class MessageViewSet(viewsets.ModelViewSet):
     pagination_class = MessagePagination
     # ony show messages to users who have bee loggedin and authenticted
     permission_class = [IsParticipantOfConversation]
-    filter_backeds = 
+    #filter_backeds = 
     #  enable filtering
     filter_backends = [DjangoFilterBackend]
     #filterset_fields = ['conversations', 'sender'] # allow filtering messages by sender
@@ -77,4 +78,4 @@ class MessageViewSet(viewsets.ModelViewSet):
         """
         conversation_pk = self.kwargs['conversation_pk']
         conversation = Conversation.objects.get(pk=conversation_pk)
-        serializer.save(senderi=self.request.user, conversation=convesation)
+        serializer.save(sender=self.request.user, conversation=conversation)
