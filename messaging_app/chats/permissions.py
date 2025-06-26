@@ -1,37 +1,45 @@
 from rest_framework import permissions
 
+from .models import Conversation
+# Import typing for type annotations to enhance code clarity
+from typing import Optional
+from rest_framework.request import Request
+from rest_framework.views import View
+
 class IsParticipantOfConversation(permissions.BasePermission):
     """
-    This is a custom permission check for:
-          1. If the user is authenticated
-          2. if the user is a participant of a conversation they are trying to accessB[
-
+    Custom permission to only allow participants of a conversation to access it.
     """
-
+    
     def has_permission(self, request, view):
-        """ first check to confirm a user is logged in for any requests
-        - This will be called first so that we can know that a user is authenticated
-        """
-        return request.user and request.user.is_authenticated
-
-    def has_object_permission(self, request, view, obj):
-        """
-        This method is called for detailed views 
-        'obj' is the instance of the conversation or message
-        """
-        # check for object-level permissions
+        # Check if the user is authenticated
+        if not request.user.is_authenticated:
+            return False
+            
+        # For list/create actions, check if they're trying to access a conversation they're in
+        if view.action in ['list', 'create']:
+            # For nested messages creation
+            if 'conversation_pk' in view.kwargs:
+                conversation_id = view.kwargs['conversation_pk']
+                return Conversation.objects.filter(
+                    conversation_id=conversation_id,
+                    participants=request.user
+                ).exists()
+            return True  # Allow listing messages with filters
+            
+        # For other actions, rely on has_object_permission
+        return True
+    def has_object_permission(self, request: Request, view: View, obj: Conversation) -> bool:
+        # Check if the user is authenticated
+        if not request.user.is_authenticated:
+            return False
+        
+        # Allow all participants for safe methods
         if request.method in permissions.SAFE_METHODS:
-            # check permission for read-only
-            pass
-        else:
-            # check permission for write request (PUT, PATCH, DELETE)
-            pass
-
-
-        if isinstance(obj, Conversation):
-            return request.user in obj.participants.all()
-
-        if hasattr(obj, 'conversation'):
-            return request.user  in obj.conversation.participants.all()
-        return false
-
+            return obj.participants.filter(user_id=request.user.id).exists()
+        
+        # For PUT, PATCH, DELETE, check if user is participant
+        if request.method in ['PUT', 'PATCH', 'DELETE']:
+            return obj.participants.filter(user_id=request.user.id).exists()
+        
+        return False
