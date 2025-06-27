@@ -1,5 +1,5 @@
 ---
-apiVersion: apps/api
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: django-messaging-app
@@ -12,18 +12,18 @@ spec:
       app: django
   template:
     metadata:
-      name: messaging-app
       labels:
         app: django
     spec:
       containers:
-        - name: messaging_app
-          image: mesaging_app-web:latest  
+        - name: messaging-app
+          image: messaging_app:latest
+          imagePullPolicy: IfNotPresent
           ports:
-            containerPort: 8000
+            - containerPort: 8000
 
 ---
-apiVersion: api
+apiVersion: v1
 kind: Service
 metadata:
   name: messaging-app-service
@@ -33,5 +33,5 @@ spec:
   ports:
     - protocol: TCP
       port: 80
-      tartgetPort: 8000
+      targetPort: 8000
 
