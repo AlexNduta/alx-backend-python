@@ -7,12 +7,13 @@ pod_dpl=django-messasging-app
 if [ -f "$MANIFEST_FILE" ]; then
     echo "filename: $deployment.yaml"
     echo "scale the pods to $Number_of_pods"
-    kubectl scale "$pod_dpl" --replicas="$Number_of_pods"
+    kubectl scale deployment "$pod_dpl" --replicas="$Number_of_pods"
 
     echo "Lets wait for pods to come back on"
     sleep 20
     echo "confirm that the pods have be increased as requested"
     kubectl get pods
+
 
     echo "get the usage of our pods"
     kubectl top pods
