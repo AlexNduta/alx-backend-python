@@ -57,7 +57,6 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'messaging_app.urls'
 
 TEMPLATES = [
-apiVersion: api
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [],
