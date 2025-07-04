@@ -1,20 +1,25 @@
 pipeline {
-    agent { 
-        node {
-            label 'jenkins-agent-goes-here'
-            }
-      }
+    agent any 
       triggers {
           pollSCM '* * * * *'
           }
     stages {
+        stsge('git set-up and cleanup') {
+            steps {
+                echo "Repo setup"
+                sh '''
+                git clone https://github.com/AlexNduta/alx-backend-python.git
+
+                cd messaging_app
+                '''
+                }
+
+            }
         stage('Build') {
             steps {
                 echo "Building.."
                 sh '''
-                cd messaging_app
-
-                pip install -r requirement.txt
+                pip3 install -r requirement.txt
                 '''
             }
         }
@@ -22,7 +27,6 @@ pipeline {
             steps {
                 echo "Testing.."
                 sh '''
-                cd messaging_app
                 pytest
                 '''
             }
