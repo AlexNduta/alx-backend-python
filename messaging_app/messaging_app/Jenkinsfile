@@ -1,42 +1,31 @@
 pipeline {
-    agent any 
-      triggers {
-          pollSCM '* * * * *'
-          }
+    agent {
+        // use a clean python environment on every build
+        docker { image 'python 3.9-slim'}
+        }
     stages {
-        stsge('git set-up and cleanup') {
+        stage('Install Dependencies') {
             steps {
-                echo "Repo setup"
+                echo "Installing dependencies....."
                 sh '''
-                git clone https://github.com/AlexNduta/alx-backend-python.git
 
-                cd messaging_app
+                python3 -m pip install -r messaging_app/requirement.txt
                 '''
                 }
 
             }
-        stage('Build') {
-            steps {
-                echo "Building.."
-                sh '''
-                pip3 install -r requirement.txt
-                '''
             }
-        }
         stage('Test') {
             steps {
-                echo "Testing.."
+                echo "Runing tests..."
                 sh '''
-                pytest
+                python3 -m pytest messaging_app/ --junitxml=report.xml
                 '''
             }
         }
-        stage('Deliver') {
-            steps {
-                echo 'Deliver....'
-                sh '''
-                '''
+    post {
+        always {
+            junit 'report.xml'
             }
         }
-    }
 }
