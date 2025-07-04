@@ -4,7 +4,7 @@ pipeline {
           pollSCM '* * * * *'
           }
     stages {
-        stsge('git set-up and cleanup') {
+        stage('git set-up and cleanup') {
             steps {
                 echo "Repo setup"
                 sh '''
