@@ -1,14 +1,14 @@
 pipeline {
     agent {
         // Use a clean Python environment for every build
-        dockerContainer { image 'python:3.9-slim' }
+        docker { image 'python:3.9-slim' }
     }
     stages {
         stage('Install Dependencies') {
             steps {
                 echo "Installing dependencies..."
                 // Use python3 to be explicit
-                sh 'python3 -m pip install -r messaging_app/requirements.txt'
+                sh 'python3 -m pip3 install -r messaging_app/requirements.txt'
             }
         }
         stage('Test') {
