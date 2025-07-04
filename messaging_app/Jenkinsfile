@@ -1,31 +1,30 @@
 pipeline {
     agent {
-        // use a clean python environment on every build
-        dockerContainer { image 'python 3.9-slim'}
-        }
+        // Use a clean Python environment for every build
+        dockerContainer { image 'python:3.9-slim' }
+    }
     stages {
         stage('Install Dependencies') {
             steps {
-                echo "Installing dependencies....."
-                sh '''
-
-                python3 -m pip install -r messaging_app/requirement.txt
-                '''
-                }
-
+                echo "Installing dependencies..."
+                // Use python3 to be explicit
+                sh 'python3 -m pip install -r messaging_app/requirements.txt'
             }
-            }
+        }
         stage('Test') {
             steps {
-                echo "Runing tests..."
-                sh '''
-                python3 -m pytest messaging_app/ --junitxml=report.xml
-                '''
+                echo "Running tests..."
+                // Generate a JUnit XML report
+                // Note: I've added the path to your code within the workspace
+                sh 'python3 -m pytest messaging_app/ --junitxml=report.xml'
             }
         }
+    }
     post {
+        // This block runs after all stages are complete
         always {
+            // Archive the test results
             junit 'report.xml'
-            }
         }
+    }
 }
