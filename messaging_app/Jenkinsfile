@@ -1,6 +1,7 @@
 pipeline {
     agent { 
-        regular-node
+        node { regular-node }
+        
     }
     stages {
         stage('Install Dependencies') {
