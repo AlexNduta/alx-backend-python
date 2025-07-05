@@ -1,8 +1,5 @@
 pipeline {
-    agent {
-        // Use a clean Python environment for every build
-        dockerContainer { image 'python:3.9-slim' }
-    }
+    agent any
     stages {
         stage('Install Dependencies') {
             steps {
