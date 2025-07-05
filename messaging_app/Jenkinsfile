@@ -10,7 +10,11 @@ pipeline {
             steps {
                 echo "Installing dependencies..."
                 // Use python3 to be explicit
-                sh 'pip3 install -r messaging_app/requirements.txt'
+                sh '''
+                python3 install virtualenv    
+                python3 -m venv venv
+                source venv/bin/activate
+                pip3 install -r messaging_app/requirements.txt'
             }
         }
         stage('Test') {
