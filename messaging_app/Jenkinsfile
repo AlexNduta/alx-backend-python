@@ -13,8 +13,7 @@ pipeline {
                 sh '''
                 pip3 install virtualenv    
                 python3 -m venv venv
-                source venv/bin/activate
-                pip3 install -r messaging_app/requirements.txt
+                venv/bin/pip3 install -r messaging_app/requirements.txt
 
                 '''
             }
@@ -24,13 +23,14 @@ pipeline {
                 echo "Running tests..."
                 // Generate a JUnit XML report
                 // Note: I've added the path to your code within the workspace
-                sh 'python3 -m pytest messaging_app/ --junitxml=report.xml'
+                sh 'venv/bin/pytest messaging_app/ --junitxml=report.xml'
             }
         }
     }
     post {
         // This block runs after all stages are complete
         always {
+            deletDir 'venv'
             // Archive the test results
             junit 'report.xml'
         }
