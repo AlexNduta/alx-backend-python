@@ -30,7 +30,7 @@ pipeline {
     post {
         // This block runs after all stages are complete
         always {
-            deletDir 'venv'
+            deleteDir 'venv'
             // Archive the test results
             junit 'report.xml'
         }
