@@ -10,7 +10,7 @@ pipeline {
             steps {
                 echo "Installing dependencies..."
                 // Use python3 to be explicit
-                sh 'python3 -m pip3 install -r messaging_app/requirements.txt'
+                sh 'pip3 install -r messaging_app/requirements.txt'
             }
         }
         stage('Test') {
