@@ -25,7 +25,7 @@ pipeline {
                 echo "Installing dependencies..."
                 // Use python3 to be explicit
                 withPythonEnv('') {
-                    sh 'pip install -r messaging_app/requirements.txt'
+                    sh 'pip3 install -r messaging_app/requirements.txt'
 
                     sh 'pytest messaging_app/ --junitxml=report.xml'
                 }
