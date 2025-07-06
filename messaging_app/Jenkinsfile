@@ -1,32 +1,37 @@
 pipeline {
-    agent { 
-        node { 
-            label 'New-Node'
-        }
-        
-    }
+    agent any
+
     stages {
-        stage('Install Dependencies') {
+        stage('checkout code') {
+            steps {
+                echo 'checking out code from github'
+                chekout(
+                    //gr checkout to our specific branch on github
+                    $class: 'GitSCM',
+                    branches: [[name: '*/main']],
+                    userRemoteconfigs: [
+                        [
+                            url: 'https://github.com/AlexNduta/alx-backend-python.git',
+                            credentialsId: 'github-credentials'
+                        ]
+                    ]
+                )
+               
+            }
+        }
+        stage('Install and Test') {
             steps {
                 echo "Installing dependencies..."
                 // Use python3 to be explicit
-                sh '''
-                    
-                python3 -m venv venv
-                venv/bin/pip3 install -r messaging_app/requirements.txt
+                withPythonEnv('') {
+                    sh 'pip install -r messaging_app/requirements.txt'
 
-                '''
+                    sh 'pytest messaging_app/ --junitxml=report.xml'
+                }
+                
             }
         }
-        stage('Test') {
-            steps {
-                echo "Running tests..."
-                // Generate a JUnit XML report
-                // Note: I've added the path to your code within the workspace
-                sh 'venv/bin/pytest messaging_app/ --junitxml=report.xml'
-            }
-        }
-    }
+        
     post {
         // This block runs after all stages are complete
         always {
