@@ -1,31 +1,44 @@
 pipeline {
-    agent {
-        // use a clean python environment on every build
-        docker { image 'python 3.9-slim'}
-        }
+    agent any
+
     stages {
-        stage('Install Dependencies') {
+        stage('checkout code') {
             steps {
-                echo "Installing dependencies....."
-                sh '''
+                echo 'checking out code from github'
+                chekout(
+                    //gr checkout to our specific branch on github
+                    $class: 'GitSCM',
+                    branches: [[name: '*/main']],
+                    userRemoteconfigs: [
+                        [
+                            url: 'https://github.com/AlexNduta/alx-backend-python.git',
+                            credentialsId: 'github-credentials'
+                        ]
+                    ]
+                )
+                sh 'git branch --set-upstream-to=original/main'
+               
+            }
+        }
+        stage('Install and Test') {
+            steps {
+                echo "Installing dependencies..."
+                // Use python3 to be explicit
+                withPythonEnv('') {
+                    sh 'pip install -r messaging_app/requirements.txt'
 
-                python3 -m pip install -r messaging_app/requirement.txt
-                '''
+                    sh 'pytest messaging_app/ --junitxml=report.xml'
                 }
-
-            }
-            }
-        stage('Test') {
-            steps {
-                echo "Runing tests..."
-                sh '''
-                python3 -m pytest messaging_app/ --junitxml=report.xml
-                '''
+                
             }
         }
+        
     post {
+        // This block runs after all stages are complete
         always {
+            // deleteDir 'venv'
+            // Archive the test results
             junit 'report.xml'
-            }
         }
+    }
 }
