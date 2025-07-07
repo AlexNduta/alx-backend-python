@@ -3,7 +3,8 @@ name: Build and Push Docker Image
 on:
   push:
     branches: [ "main" ]
-
+# This workflow triggers on pushes to the main branch
+  workflow_dispatch: # Allows manual triggering of the workflow
 jobs:
   build_and_push:
     runs-on: ubuntu-latest
