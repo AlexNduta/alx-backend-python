@@ -7,7 +7,7 @@ on:
 jobs:
   build_and_push:
     runs-on: ubuntu-latest
-    
+    # This job will run on the latest version of Ubuntu
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
