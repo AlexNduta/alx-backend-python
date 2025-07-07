@@ -1,0 +1,26 @@
+name: Build and push to Docker Hub
+
+on:
+  push:
+    branches: [ "main" ]
+
+
+jobs:
+  build_and_push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repository
+        uses: action:checkout@v4
+
+      - name: login to docker hub
+        uses: action/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build and push to Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./messagin_app
+          file: ./messaging_app/Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/messaging_app:latest
