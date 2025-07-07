@@ -28,7 +28,7 @@ class IsParticipantOfConversation(permissions.BasePermission):
             pass
 
 
-        if isinstance(obj, conversation):
+        if isinstance(obj, Conversation):
             return request.user in obj.participants.all()
 
         if hasattr(obj, 'conversation'):
