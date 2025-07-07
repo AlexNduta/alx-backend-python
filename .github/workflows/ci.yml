@@ -22,7 +22,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r messaging_app/requirements.txt
-          pip install flake8 pytest-conv
+          pip install flake8 pytest-cov
 
       - name: Lint with flake8
         run: |
